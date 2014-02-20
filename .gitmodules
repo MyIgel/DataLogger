@@ -1,0 +1,6 @@
+[submodule "server/js/flottooltip"]
+	path = server/js/flottooltip
+	url = https://github.com/krzysu/flot.tooltip.git
+[submodule "server/js/flot"]
+	path = server/js/flot
+	url = https://github.com/flot/flot.git
