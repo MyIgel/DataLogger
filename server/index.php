@@ -51,9 +51,11 @@ $log = new logger( $database, $api_key );
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li><a>&nbsp;</a>
+				<li>
+					<a>&nbsp;</a>
 				</li>
-				<li class="active"><a href="<?=$_SERVER['PHP_SELF'];?>"><i class="glyphicon glyphicon-signal"></i> Logger</a>
+				<li class="active">
+					<a href="<?=$_SERVER['PHP_SELF'];?>"><i class="glyphicon glyphicon-signal"></i> Logger	</a>
 				</li>
 				<li class="dropdown messages-dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-time"></i> Zeit <b class="caret"></b></a>
@@ -72,8 +74,7 @@ $log = new logger( $database, $api_key );
 					</ul>
 				</li>
 			</ul>
-		</div>
-		<!-- /.navbar-collapse -->
+		</div><!-- /.navbar-collapse -->
 	</nav>
 
 	<div class="container">
@@ -93,8 +94,7 @@ $log = new logger( $database, $api_key );
 					</li>
 				</ul>
 			</div>
-		</div>
-		<!-- /.row -->
+		</div><!-- /.row -->
 
 		<div class="row">
 			<div class="col-lg-12">
@@ -110,11 +110,9 @@ $log = new logger( $database, $api_key );
 					</div>
 				</div>
 			</div>
-		</div>
-		<!-- /.row -->
+		</div><!-- /.row -->
 
-	</div>
-	<!-- / container -->
+	</div><!-- / container -->
 
 <!-- JavaScript -->
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -131,8 +129,17 @@ $log = new logger( $database, $api_key );
 
 <?php
 
-$aussen = getData('10-000802aa9e03');
-$innen  = getData('10-000802ab8ec2');
+if(isset($_GET['day'])){
+	$from = time() - (1.01*60*60*24*$_GET['day']); // 24 Std.
+} else if(isset($_GET['hour'])){
+	$from = time() - (1.1*60*60*$_GET['hour']); // x Std.
+} else {
+	$from = "0";
+}
+
+$aussen = getData('10-000802aa9e03', $from);
+$innen  = getData('10-000802ab8ec2', $from);
+if( $aussen && $innen ){
 $minka = min(array_keys($aussen));
 $maxka = max(array_keys($aussen));
 $minki = min(array_keys($innen));
@@ -153,6 +160,9 @@ if(isset($_GET['day'])){
 
 $miny = ceil(( $minva < $minvi ) ? $minva : $minvi)-3;
 $maxy = floor(( $maxva > $maxvi ) ? $maxva : $maxvi)+3;
+} else {
+	$aussen=$innen=$minx=$miny=$maxx=$maxy="";
+}
 ?>
 
 var aussen = [<?=arrToVar($aussen)?>];

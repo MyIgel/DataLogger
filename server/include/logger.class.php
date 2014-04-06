@@ -26,9 +26,16 @@ class logger {
     return false;
   }
 	 
-  function get( $type, $sensor ){
+  function get( $type, $sensor, $from=0, $to="NOW" ){
     
-    $result = $this->db->query("SELECT (UNIX_TIMESTAMP(time)*1000) as time,data FROM `datalog` where type = '".$this->db->real_escape_string($type)."' and sensor = '".$this->db->real_escape_string($sensor)."'");
+    $to = ($to=="NOW")?time():$to;
+    $result = $this->db->query("SELECT (UNIX_TIMESTAMP(time)*1000) AS time,data FROM `datalog`
+    							WHERE type = '".$this->db->real_escape_string($type)."'
+    							AND sensor = '".$this->db->real_escape_string($sensor)."'
+    							AND time BETWEEN
+    								FROM_UNIXTIME(".$this->db->real_escape_string($from).")
+    								AND FROM_UNIXTIME(".$this->db->real_escape_string($to).")"
+    						);
      if ( $result ) {
         $data = array();
         
