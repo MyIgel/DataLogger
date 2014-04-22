@@ -5,37 +5,67 @@
 #==============================================
 #   CONFIG
 
-apikey="R4nd0MsE3dT8beChANgeD"
-server="log.server.com"
+apikey='R4nd0MsE3dT8beChANgeD'
+server='http://log.server.com'
 
 
 
 #=============================================
 
+getTemp(){
+	
+	for file in /sys/bus/w1/devices/10-*/w1_slave ; do
 
-for file in /sys/bus/w1/devices/10-*/w1_slave ; do
+		# Temperatur des Sensors auslesen
+		temp=`grep 't=' $file | awk -F't=' '{print $2}'`
+		temp=`echo "scale=2; $temp / 1000" | bc`
+		if [ $temp == -1.25 ]; then # Workaround, wenn der Außensensor einen falschen Wert zurückgibt (hier -1.25)
+			temp=`grep 't=' $file | awk -F't=' '{print $2}'`
+			temp=`echo "scale=2; $temp / 1000" | bc`
+		fi
 
-# Temperatur des Sensors auslesen
-temp=`grep 't=' $file | awk -F't=' '{print $2}'`
-temp2=`echo "scale=2; $temp / 1000" | bc`
-if [ $temp2 == -1.25 ]; then  # Workaround, da mein Außensensor manchmal diesen Wert zurückgibt, dann wird nochmal gemessen und er stimmt
-	temp=`grep 't=' $file | awk -F't=' '{print $2}'`
-	temp2=`echo "scale=2; $temp / 1000" | bc`
+
+		sensor=`echo $file |tail -c25|head -c15`
+
+		# Wert ausgeben
+		echo "Gemessene Temperatur des Sensors $sensor: $temp °C"
+
+		if [ "$#" == '0' ]; then
+			# API abfragen
+			request="$server/v1/log/temp/$sensor/$temp&apikey=$apikey"
+			status=`curl -X GET "$request" 2> /dev/null | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["status"]' 2> /dev/null`
+		elif [ "$1" == 'show' ]; then
+			status='ok'
+		fi
+
+		if [ "$status" != 'ok' ]; then
+			echo "Err: $file | $request" >&2
+			exit 1
+		fi
+
+	done
+}
+
+
+
+if [ "$#" == "0" ]; then
+	getTemp
+	exit 0
 fi
 
+while getopts ":hs" options; do
+	case $options in
+		h ) echo "
+TempLogger Client für 1Wire Temperatursensoren (z.B. DS18B20 oder DS18S20).
+ Sendet die Daten an $server
 
-# Wert ausgeben
-echo "Gemessene Temperatur des Sensors $file: $temp2°C"
-
-sensor=`echo $file |tail -c25|head -c15`
-
-# API abfragen
-status=`curl -X GET "http://$server/v1/log/temp/$sensor/$temp2&apikey=$apikey" 2> /dev/null | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["status"]'`
-
-
-if [ "$status" != 'ok' ]; then
-	echo "Err" $file
-	exit 1
-fi
-
+  Optionen:
+    -h  Diese Hilfe
+    -s  Temperaturen nur anzeigen
+";;
+		s ) getTemp show;;
+		\?) echo "Invalid option: -$OPTARG" >&2
+			exit 1;;
+	esac
+	
 done
