@@ -14,12 +14,16 @@ include_once('../include/functions.php');
 $return = array('status'=>'err');
 $url = @explode( "/", $_GET['url'] );
 
+if( isset($url['0']) && $url['0'] == 'show' ){
+	$_GET['apikey'] = $api_key;
+}
+
 if( isset($_GET['apikey']) && $_GET['apikey'] == $api_key && isset($url['0']) ){
 	
 	$log = new logger( $database, $_GET['apikey'] );
 	
-	// http://log.server.com/v1/log/temp/SenSorNo/10.4&apikey=R4nd0MsE3dT8beChANgeD
-	if( $url['0'] == 'log' ){
+	
+	if( $url['0'] == 'log' ){  // http://log.server.com/v1/log/temp/SenSorNo/10.4&apikey=R4nd0MsE3dT8beChANgeD
 		
 		if( isset($url['1']) && isset($url['2']) && isset($url['3']) ){
 			
@@ -31,11 +35,19 @@ if( isset($_GET['apikey']) && $_GET['apikey'] == $api_key && isset($url['0']) ){
 			
 		}
 		
-	} else	if( $url['0'] == 'show' ){  // http://log.server.com/v1/show/temp/SenSorNo/&apikey=mZBrVxB9u6XhQwM2P68f
+	} else	if( $url['0'] == 'show' ){  // http://log.server.com/v1/show/temp/SenSorNo/[from/to]
 		
 		if( isset($url['1']) && isset($url['2']) ){
 			
-			$data = $log->get( $url['1'], $url['2'] );
+			if( isset($url['3']) ){
+				if( isset($url['4']) ){
+					$data = $log->get( $url['1'], $url['2'], $url['3'], $url['4'] );
+				} else {
+					$data = $log->get( $url['1'], $url['2'], $url['3'] );
+				}
+			} else {
+				$data = $log->get( $url['1'], $url['2'] );
+			}
 			
 			if( $data ){
 			  
@@ -55,14 +67,4 @@ if ($return['status']!='ok' ){
 }
 
 
-
-if( $url['0'] == 'show' && isset($return['data']) ){
-	$data = json_encode($return['data'], true);
-	$data = str_replace( '","', "],\n[", $data);
-	$data = str_replace( '{"', '[[', $data);
-	$data = str_replace( '"}', ']]', $data);
-	$data = str_replace( '":"', ',', $data);
-	echo $data;
-	exit;
-}
 echo json_encode($return, true);

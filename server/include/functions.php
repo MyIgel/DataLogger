@@ -4,9 +4,10 @@ include_once('logger.class.php');
 
 function getData( $sensor, $from=0, $to="NOW" ){
 	global $log;
+	$to = ($to=="NOW")?time():$to;
 	
 	$data = $log->get( 'temp', $sensor, $from, $to );
-	
+
 	if( is_array($data) ){
 		return $data;
 	}
