@@ -2,7 +2,7 @@ DataLogger
 ==========
 Ein einfacher Datenlogger, basierend auf einem Client/Server-Aufbau mit API zugriff
 
-Der Übersichtlichkeit halber wird in den Beispielen http://log.server.com als Serveraddresse angegeben, das muss natürlich angepast werden, genauso wie die Zugangsdaten ;)
+Der Übersichtlichkeit halber wird in den Beispielen `http://log.server.com` als Serveraddresse angegeben, das muss natürlich angepast werden, genauso wie die Zugangsdaten ;)
 Nach dem `git clone` muss noch ein `git submodule update --init` ausgeführt werden, um die Abhängigkeiten von anderen Projekten aufzulösen.
 
 Client
@@ -21,18 +21,32 @@ Server
 ------
 Auf dem Server muss PHP und MySQL laufen und htaccess aktiv sein, was aber normalerweise bei allen Hostern der Fall ist (und auf dem Pi sowieso ;) )
 
-Zuerst muss diem MySQL Datenbank angelegt werden:
+Zuerst müssen die MySQL Datenbanken angelegt werden:
 ```mysql
-CREATE TABLE `datalog` (
+CREATE TABLE IF NOT EXISTS `data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `client` varchar(20) NOT NULL,
-  `type` varchar(10) NOT NULL,
+  `sensorID` int(11) NOT NULL,
   `data` text NOT NULL,
-  `sensor` varchar(15) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
+```mysql
+CREATE TABLE IF NOT EXISTS `sensor` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL,
+  `description` text NOT NULL,
+  `sid` varchar(15) NOT NULL COMMENT 'Sensor ID',
+  `unit` varchar(11) NOT NULL,
+  `type` varchar(10) DEFAULT NULL,
+  `options` text,
+  `user` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```
+
 und die Zugangsdaten in der `include/config.php` eingetragen werden, dann können die Dateien auf den Server hochgeladen werden.
 
 

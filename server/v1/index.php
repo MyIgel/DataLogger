@@ -12,7 +12,7 @@ include_once('../include/config.php');
 include_once('../include/functions.php');
 
 $return = array('status'=>'err');
-$url = @explode( "/", $_GET['url'] );
+$url = @explode( "/", trim($_GET['url'], "/") );
 
 if( isset($url['0']) && $url['0'] == 'show' ){
 	$_GET['apikey'] = $api_key;
@@ -27,7 +27,9 @@ if( isset($_GET['apikey']) && $_GET['apikey'] == $api_key && isset($url['0']) ){
 		
 		if( isset($url['1']) && isset($url['2']) && isset($url['3']) ){
 			
-			if( $log->data( $url['1'], $url['2'], $url['3'] ) ){
+			$sensor = current( $log->getSensor( $url['2'], $url['1'] ) );
+
+			if( $log->data( $sensor['id'], $url['3'] ) ){
 			  
 				$return['status'] = 'ok';
 
@@ -35,18 +37,20 @@ if( isset($_GET['apikey']) && $_GET['apikey'] == $api_key && isset($url['0']) ){
 			
 		}
 		
-	} else	if( $url['0'] == 'show' ){  // http://log.server.com/v1/show/temp/SenSorNo/[from/to]
+	} else if( $url['0'] == 'show' ){  // http://log.server.com/v1/show/temp/SenSorNo[/from][/to]
 		
 		if( isset($url['1']) && isset($url['2']) ){
+
+			$sensor = current( $log->getSensor( $url['2'], $url['1'] ) );
 			
 			if( isset($url['3']) ){
 				if( isset($url['4']) ){
-					$data = $log->get( $url['1'], $url['2'], $url['3'], $url['4'] );
+					$data = $log->get( $sensor['id'], $url['3'], $url['4'] );
 				} else {
-					$data = $log->get( $url['1'], $url['2'], $url['3'] );
+					$data = $log->get( $sensor['id'], $url['3'] );
 				}
 			} else {
-				$data = $log->get( $url['1'], $url['2'] );
+				$data = $log->get( $sensor['id'] );
 			}
 			
 			if( $data ){

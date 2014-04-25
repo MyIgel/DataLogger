@@ -11,7 +11,8 @@ include_once('include/functions.php');
 
 $log = new logger( $database, $api_key );
 
-?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html lang="de">
 
 <head>
@@ -129,60 +130,45 @@ $log = new logger( $database, $api_key );
 
 <?php
 
-if(isset($_GET['day'])){
-	$from = time() - (1.01*60*60*24*$_GET['day']); // 24 Std.
-} else if(isset($_GET['hour'])){
-	$from = time() - (1.1*60*60*$_GET['hour']); // x Std.
-} else {
-	$from = "0";
-}
+if( $sensors = $log->getSensor() ){
 
-$aussen = getData('10-000802aa9e03', $from);
-$innen  = getData('10-000802ab8ec2', $from);
-if( $aussen && $innen ){
-$minka = min(array_keys($aussen));
-$maxka = max(array_keys($aussen));
-$minki = min(array_keys($innen));
-$maxki = max(array_keys($innen));
+	$data = array();
 
-$minva = min($aussen);
-$maxva = max($aussen);
-$minvi = min($innen);
-$maxvi = max($innen);
+	if(isset($_GET['day'])){
+		$from = time() - (1.01*60*60*24*$_GET['day']); // 24 Std.
+	} else if(isset($_GET['hour'])){
+		$from = time() - (1.1*60*60*$_GET['hour']); // x Std.
+	} else {
+		$from = "0";
+	}
 
-$maxx = ( $maxka > $maxki ) ? $maxka : $maxki;
-$minx = (( $minka < $minki ) ? $minka : $minki);
-if(isset($_GET['day'])){
-	$minx = $maxx-1000*60*60*24*$_GET['day']; // 24 Std.
-} else if(isset($_GET['hour'])){
-	$minx = $maxx-1000*60*60*$_GET['hour']; // x Std.
-}
-
-$miny = ceil(( $minva < $minvi ) ? $minva : $minvi)-3;
-$maxy = floor(( $maxva > $maxvi ) ? $maxva : $maxvi)+3;
-} else {
-	$aussen=$innen=$minx=$miny=$maxx=$maxy="";
-}
+	foreach( $sensors as $sensor ){
+		$data[$sensor['id']] = getData($sensor['id'], $from);
+	}
 ?>
-
-var aussen = [<?=arrToVar($aussen)?>];
-var innen  = [<?=arrToVar($innen)?>];
 
 
 var plot = $.plot($("#flottemp"), 
-  [
-    {label: "Innentemperaur", data: innen, points: { symbol: "circle", fillColor: "#AA4643" }, color: '#AA4643'},
-    {label: "Au&szlig;entemperatur", data: aussen, points: { symbol: "circle", fillColor: "#058DC7" }, color: '#058DC7'},
-  ],
-  {
-    xaxis: { min: <?=$minx?>, max: <?=$maxx?>, mode: "time", timeformat: "%d.%m.%y, %H:%M:%S", },
-    yaxis: {min: <?=$miny?>, max: <?=$maxy?> },
-    grid: { hoverable: true, clickable: true },
-    tooltip: true, tooltipOpts: { content: "%s am %x: %y.2°C", shifts: { x: -60, y: 25 } },
-    series: {lines: {show: true, fill: true}}
-  }
-);
+		[
+<?php
+	foreach( $sensors as $sensor ){
 
+		$options = json_decode( $sensor['options'], true );
+
+		echo '{label: "'.htmlentities($sensor['name']).'", data: ['.jsArray($data[$sensor['id']]).'], points: { symbol: "circle", fillColor: "#'.$options['color'].'" }, color: "#'.$options['color'].'"},'."\n\n";
+	}
+?>
+		],
+		{
+			xaxis: { mode: "time", timeformat: "%d.%m.%y, %H:%M:%S", },
+			yaxis: { },
+			grid: { hoverable: true, clickable: true },
+			tooltip: true, tooltipOpts: { content: "%s am %x: %y.2°C", shifts: { x: -60, y: 25 } },
+			series: {lines: {show: true, fill: true}}
+		}
+	);
+
+<?php } ?>
 
 </script>
 
