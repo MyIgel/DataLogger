@@ -34,11 +34,10 @@ class logger {
 	function getSensor( $sensor=false, $type=false ){
 		
 		$query = "SELECT * FROM sensor WHERE user = '".$this->db->real_escape_string($this->user)."'";
-		$query = ($sensor) ? $query.' AND sid = "'.$this->db->real_escape_string($sensor).'"' : $query;
-		$query = ($type) ? $query.' AND type = "'.$this->db->real_escape_string($type).'"' : $query;
+		$query .= ($sensor) ? ' AND sid = "'.$this->db->real_escape_string($sensor).'"' : '';
+		$query .= ($type) ? ' AND type = "'.$this->db->real_escape_string($type).'"' : '';
 
-		$result = $this->db->query( $query );
-		if ( $result ) {
+		if ( $result = $this->db->query( $query ) ) {
 
 			$sensors = array();
 				
@@ -60,8 +59,7 @@ class logger {
 					FROM_UNIXTIME(".$this->db->real_escape_string($from).")
 					AND FROM_UNIXTIME(".$this->db->real_escape_string($to).")";
 
-		$result = $this->db->query( $query );
-		 if ( $result ) {
+		 if ( $this->db->query( $query ) ) {
 			$data = array();
 			
 			 while($row = $result->fetch_array(MYSQL_ASSOC)) {

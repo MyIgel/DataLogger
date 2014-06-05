@@ -1,6 +1,6 @@
 <?php defined('_API') or die();
 
-$api_key = "R4nd0MsE3dT8beChANgeD";
+$api_key = 'R4nd0MsE3dT8beChANgeD';
 
 $database = array(
   'host'=>'localhost',

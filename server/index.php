@@ -19,7 +19,6 @@ $log = new logger( $database, $api_key );
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="Data Logger Frontend">
-	<meta name="author" content="Igor Scheller">
 	<meta http-equiv="refresh" content="120">
 
 	<title>Datalogger</title>
@@ -155,12 +154,12 @@ var plot = $.plot($("#flottemp"),
 
 		$options = json_decode( $sensor['options'], true );
 
-		echo '{label: "'.htmlentities($sensor['name']).'", data: ['.jsArray($data[$sensor['id']]).'], points: { symbol: "circle", fillColor: "#'.$options['color'].'" }, color: "#'.$options['color'].'"},'."\n\n";
+		echo '{label: "'.htmlentities($sensor['name']).'", data: ['.jsArray($data[$sensor['id']]).'], points: { symbol: "circle", fillColor: "#'.htmlentities($options['color']).'" }, color: "#'.htmlentities($options['color']).'"},'."\n\n";
 	}
 ?>
 		],
 		{
-			xaxis: { mode: "time", timeformat: "%d.%m.%y, %H:%M:%S", },
+			xaxis: { mode: "time", timezone: "browser", timeformat: "%d.%m.%y, %H:%M:%S", },
 			yaxis: { },
 			grid: { hoverable: true, clickable: true },
 			tooltip: true, tooltipOpts: { content: "%s am %x: %y.2°C", shifts: { x: -60, y: 25 } },

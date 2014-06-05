@@ -3,7 +3,15 @@ DataLogger
 Ein einfacher Datenlogger, basierend auf einem Client/Server-Aufbau mit API zugriff
 
 Der Übersichtlichkeit halber wird in den Beispielen `http://log.server.com` als Serveraddresse angegeben, das muss natürlich angepast werden, genauso wie die Zugangsdaten ;)
-Nach dem `git clone` muss noch ein `git submodule update --init` ausgeführt werden, um die Abhängigkeiten von anderen Projekten aufzulösen.
+Nach dem
+```sh
+git clone https://github.com/MyIgel/DataLogger.git
+```
+muss noch ein
+```sh
+git submodule update --init
+```
+ausgeführt werden, um die Abhängigkeiten von anderen Projekten aufzulösen.
 
 Client
 ------
@@ -61,5 +69,5 @@ Hinzufügen von Einträgen:
 * `http://log.server.com/v1/log/temp/[sensorid]/[data]&apikey=[authkey]`
 
 Anzeigen der Einträge:
-* `http://log.server.com/v1/show/temp/[sensorid]&apikey=[authkey]`
+* `http://log.server.com/v1/show/temp/[sensorid][/von][/bis][&apikey=[authkey]]`
 
