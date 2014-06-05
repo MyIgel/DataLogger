@@ -1,26 +1,28 @@
 <?php defined('_API') or die();
 
-include_once('logger.class.php');
+include_once ('logger.class.php');
 
-function getData( $sensor, $from=0, $to="NOW" ){
+function getData($sensor, $from = 0, $to = "NOW")
+{
 	global $log;
+	$data = $log->get($sensor, $from, $to);
 	
-	$data = $log->get( $sensor, $from, $to );
-
-	if( is_array($data) ){
+	if (is_array($data))
+	{
 		return $data;
 	}
 	return false;
 }
 
-function jsArray( $data ){
-
-	if( is_array($data) ){
+function jsArray($data) 
+{
+	if (is_array($data))
+	{
 		$data = json_encode($data, true);
-		$data = str_replace( '","', "],[", $data);
-		$data = str_replace( '{"', '[', $data);
-		$data = str_replace( '"}', ']', $data);
-		$data = str_replace( '":"', ',', $data);
+		$data = str_replace('","', "],[", $data);
+		$data = str_replace('{"', '[', $data);
+		$data = str_replace('"}', ']', $data);
+		$data = str_replace('":"', ',', $data);
 		return $data;
 	}
 	return false;

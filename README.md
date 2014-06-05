@@ -4,13 +4,9 @@ Ein einfacher Datenlogger, basierend auf einem Client/Server-Aufbau mit API zugr
 
 Der Übersichtlichkeit halber wird in den Beispielen `http://log.server.com` als Serveraddresse angegeben, das muss natürlich angepast werden, genauso wie die Zugangsdaten ;)
 Nach dem
-```sh
-git clone https://github.com/MyIgel/DataLogger.git
-```
+`git clone https://github.com/MyIgel/DataLogger.git`
 muss noch ein
-```sh
-git submodule update --init
-```
+`git submodule update --init`
 ausgeführt werden, um die Abhängigkeiten von anderen Projekten aufzulösen.
 
 Client

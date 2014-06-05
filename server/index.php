@@ -1,16 +1,14 @@
 <?php
 /*
-* Data Logging API
-* 
-*/
-
+ * Data Logging API
+ *
+ */
 define('_API', 1);
 
-include_once('include/config.php');
-include_once('include/functions.php');
+include_once ('include/config.php');
+include_once ('include/functions.php');
 
-$log = new logger( $database, $api_key );
-
+$log = new logger($database, $api_key);
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -55,7 +53,7 @@ $log = new logger( $database, $api_key );
 					<a>&nbsp;</a>
 				</li>
 				<li class="active">
-					<a href="<?=$_SERVER['PHP_SELF'];?>"><i class="glyphicon glyphicon-signal"></i> Logger	</a>
+					<a href="<?=$_SERVER['PHP_SELF']; ?>"><i class="glyphicon glyphicon-signal"></i> Logger	</a>
 				</li>
 				<li class="dropdown messages-dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-time"></i> Zeit <b class="caret"></b></a>
@@ -70,7 +68,7 @@ $log = new logger( $database, $api_key );
 						<li><a href="?day=14">2 Wochen</a></li>
 						<li><a href="?day=30">1 Monat</a></li>
 						<li class="divider"></li>
-						<li><a href="<?=$_SERVER['PHP_SELF'];?>">Alle Daten</a></li>
+						<li><a href="<?=$_SERVER['PHP_SELF']; ?>">Alle Daten</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -90,7 +88,7 @@ $log = new logger( $database, $api_key );
 			</div>
 			<div class="col-lg-4">
 				<ul class="list-group">
-					<li class="list-group-item">Gesamt Datensätze: <span class="badge"><?=$log->stats( 'total' );?></span>
+					<li class="list-group-item">Gesamt Datensätze: <span class="badge"><?=$log->stats('total'); ?></span>
 					</li>
 				</ul>
 			</div>
@@ -128,33 +126,32 @@ $log = new logger( $database, $api_key );
 <script>
 
 <?php
-
-if( $sensors = $log->getSensor() ){
-
+if ($sensors = $log->getSensor())
+{
 	$data = array();
-
-	if(isset($_GET['day'])){
-		$from = time() - (1.01*60*60*24*$_GET['day']); // 24 Std.
-	} else if(isset($_GET['hour'])){
-		$from = time() - (1.1*60*60*$_GET['hour']); // x Std.
+	
+	if (isset($_GET['day'])) {
+		$from = time() - (1.01 * 60 * 60 * 24 * $_GET['day']); // 24 Std.
+	} else if (isset($_GET['hour'])) {
+		$from = time() - (1.1 * 60 * 60 * $_GET['hour']); // x Std.
 	} else {
 		$from = "0";
 	}
-
-	foreach( $sensors as $sensor ){
+	
+	foreach ($sensors as $sensor)
+	{
 		$data[$sensor['id']] = getData($sensor['id'], $from);
 	}
 ?>
 
 
-var plot = $.plot($("#flottemp"), 
+var plot = $.plot($("#flottemp"),
 		[
 <?php
-	foreach( $sensors as $sensor ){
-
-		$options = json_decode( $sensor['options'], true );
-
-		echo '{label: "'.htmlentities($sensor['name']).'", data: ['.jsArray($data[$sensor['id']]).'], points: { symbol: "circle", fillColor: "#'.htmlentities($options['color']).'" }, color: "#'.htmlentities($options['color']).'"},'."\n\n";
+	foreach ($sensors as $sensor)
+	{
+		$options = json_decode($sensor['options'], true);
+		echo '{label: "' . htmlentities($sensor['name']) . '", data: [' . jsArray($data[$sensor['id']]) . '], points: { symbol: "circle", fillColor: "#' . htmlentities($options['color']) . '" }, color: "#' . htmlentities($options['color']) . '"},' . "\n\n";
 	}
 ?>
 		],
