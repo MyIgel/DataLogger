@@ -1,13 +1,48 @@
 <?php
-/*
- * Data Logging API
+/**
+ * DataLogger
  *
+ * Ein einfacher Datenlogger, basierend auf einem Client/Server-Aufbau mit API zugriff
+ *
+ *
+ * LICENSE:
+ *
+ * Copyright 2014 Igor Scheller
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *
+ * @package		DataLogger
+ * @version		0.1.1
+ * @author		Igor Scheller <igor.scheller@igorshp.de>
+ * @copyright	2014 Igor Scheller
+ * @license		http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+ */
+
+/**
+ * Wird von der aufgerufenen Seite gesetzt
+ *
+ * Dadurch kann geprüft werden, ob die Datei inkludiert oder direkt aufgerufen wurde
+ *
+ * @ignore
+ * @var int
  */
 define('_API', 1);
 
+/** Kernfunktionen laden */
 include_once ('include/config.php');
 include_once ('include/functions.php');
 
+/** Logginginstanz starten */
 $log = new logger($database, $api_key);
 ?>
 <!DOCTYPE html>
@@ -24,11 +59,11 @@ $log = new logger($database, $api_key);
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
-
-	<link rel="stylesheet" href="css/style.css">
-
-	<!-- Page Specific CSS -->
+	<!-- Morris CSS -->
 	<link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
+
+	<!-- Site CSS -->
+	<link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
@@ -129,7 +164,8 @@ $log = new logger($database, $api_key);
 if ($sensors = $log->getSensor())
 {
 	$data = array();
-	
+
+	/** Zeitspanne berechnen, welche angezeigt werden soll */
 	if (isset($_GET['day'])) {
 		$from = time() - (1.01 * 60 * 60 * 24 * $_GET['day']); // 24 Std.
 	} else if (isset($_GET['hour'])) {
@@ -137,7 +173,8 @@ if ($sensors = $log->getSensor())
 	} else {
 		$from = "0";
 	}
-	
+
+	/** Daten für jeden Sensor auslesen */
 	foreach ($sensors as $sensor)
 	{
 		$data[$sensor['id']] = getData($sensor['id'], $from);
@@ -148,6 +185,7 @@ if ($sensors = $log->getSensor())
 var plot = $.plot($("#flottemp"),
 		[
 <?php
+	/** Daten ausgeben */
 	foreach ($sensors as $sensor)
 	{
 		$options = json_decode($sensor['options'], true);
