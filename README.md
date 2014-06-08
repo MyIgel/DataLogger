@@ -3,11 +3,7 @@ DataLogger
 Ein einfacher Datenlogger, basierend auf einem Client/Server-Aufbau mit API zugriff
 
 Der Übersichtlichkeit halber wird in den Beispielen `http://log.server.com` als Serveraddresse angegeben, das muss natürlich angepast werden, genauso wie die Zugangsdaten ;)
-Nach dem
-`git clone https://github.com/MyIgel/DataLogger.git`
-muss noch ein
-`git submodule update --init`
-ausgeführt werden, um die Abhängigkeiten von anderen Projekten aufzulösen.
+Nach dem `git clone https://github.com/MyIgel/DataLogger.git` muss noch ein `git submodule update --init` ausgeführt werden, um die Abhängigkeiten von anderen Projekten aufzulösen.
 
 Client
 ------
@@ -28,26 +24,26 @@ Auf dem Server muss PHP und MySQL laufen und htaccess aktiv sein, was aber norma
 Zuerst müssen die MySQL Datenbanken angelegt werden:
 ```mysql
 CREATE TABLE IF NOT EXISTS `data` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `sensorID` int(11) NOT NULL,
-  `data` text NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`sensorID` int(11) NOT NULL,
+	`data` text NOT NULL,
+	`time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 ```mysql
 CREATE TABLE IF NOT EXISTS `sensor` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NOT NULL,
-  `description` text NOT NULL,
-  `sid` varchar(15) NOT NULL COMMENT 'Sensor ID',
-  `unit` varchar(11) NOT NULL,
-  `type` varchar(10) DEFAULT NULL,
-  `options` text,
-  `user` varchar(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`name` varchar(20) NOT NULL,
+	`description` text NOT NULL,
+	`sid` varchar(15) NOT NULL COMMENT 'Sensor ID',
+	`unit` varchar(11) NOT NULL,
+	`type` varchar(10) DEFAULT NULL,
+	`options` text,
+	`user` varchar(20) NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
@@ -67,3 +63,7 @@ Hinzufügen von Einträgen:
 Anzeigen der Einträge:
 * `http://log.server.com/v1/show/temp/[sensorid][/von][/bis][&apikey=[authkey]]`
 
+
+Lizenz
+------------
+Der DataLogger steht unter der [Apache Lizenz 2.0](http://www.apache.org/licenses/LICENSE-2.0 "Apache License 2.0"), siehe [LICENSE](LICENSE)
