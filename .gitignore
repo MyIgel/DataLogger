@@ -1,0 +1,13 @@
+# generic files to ignore
+# backup files (*~) and vim swap file (.swp), MacOS dir file (.DS_Store) and others
+*~
+*.tmp
+*.temp
+*.lock
+*.DS_Store
+.*.swp
+*.out
+doc/*
+
+# except this file
+!.gitignore
