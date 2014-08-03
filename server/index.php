@@ -63,7 +63,7 @@ $log = new logger($database, $api_key);
 	<link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
 
 	<!-- Site CSS -->
-	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
@@ -152,11 +152,11 @@ $log = new logger($database, $api_key);
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
 <!-- Page Specific Plugins -->
-<script src="js/flot/jquery.flot.js"></script>
-<script src="js/flottooltip/js/jquery.flot.tooltip.min.js"></script>
-<script src="js/flot/jquery.flot.resize.js"></script>
-<script src="js/flot/jquery.flot.time.js"></script>
-<script src="js/flot/jquery.flot.selection.js"></script>
+<script src="assets/js/flot/jquery.flot.js"></script>
+<script src="assets/js/flottooltip/js/jquery.flot.tooltip.min.js"></script>
+<script src="assets/js/flot/jquery.flot.resize.js"></script>
+<script src="assets/js/flot/jquery.flot.time.js"></script>
+<script src="assets/js/flot/jquery.flot.selection.js"></script>
 
 <script>
 

@@ -18,8 +18,8 @@
 define('_API', 1);
 
 /** Kernfunktionen laden */
-include_once ('../include/config.php');
-include_once ('../include/functions.php');
+include_once ('../../include/config.php');
+include_once ('../../include/functions.php');
 
 $return = array('status' => 'err');
 $url = explode("/", @trim($_GET['url'], "/"));
@@ -35,7 +35,7 @@ if (isset($_GET['apikey']) && $_GET['apikey'] == $api_key && isset($url['0']))
 	$log = new logger($database, $_GET['apikey']);
 
 	/** Daten hinzufügen */
-	if ($url['0'] == 'log') // http://log.server.com/v1/log/temp/SenSorNo/[SenSorData]&apikey=R4nd0MsE3dT8beChANgeD
+	if ($url['0'] == 'log') // http://log.server.com/api/v1/log/temp/SenSorNo/[SenSorData]&apikey=R4nd0MsE3dT8beChANgeD
 	{
 		if (isset($url['1']) && isset($url['2']) && isset($url['3']))
 		{
@@ -49,7 +49,7 @@ if (isset($_GET['apikey']) && $_GET['apikey'] == $api_key && isset($url['0']))
 		}
 	}
 	/** Daten ausgeben */
-	else if ($url['0'] == 'show') // http://log.server.com/v1/show/temp/SenSorNo[/from][/to]
+	else if ($url['0'] == 'show') // http://log.server.com/api/v1/show/temp/SenSorNo[/from][/to]
 	{
 		if (isset($url['1']) && isset($url['2']))
 		{
