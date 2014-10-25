@@ -103,7 +103,7 @@ $log = new logger($database, $api_key);
 						<li><a href="?day=14">2 Wochen</a></li>
 						<li><a href="?day=30">1 Monat</a></li>
 						<li class="divider"></li>
-						<li><a href="<?=$_SERVER['PHP_SELF']; ?>">Alle Daten</a></li>
+						<li><a href="<?=$_SERVER['PHP_SELF']; ?>?time=all">Alle Daten</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -170,8 +170,10 @@ if ($sensors = $log->getSensor())
 		$from = time() - (1.01 * 60 * 60 * 24 * $_GET['day']); // 24 Std.
 	} else if (isset($_GET['hour'])) {
 		$from = time() - (1.1 * 60 * 60 * $_GET['hour']); // x Std.
-	} else {
+	} else if(isset($_GET['time']) && $_GET['time'] == 'all') {
 		$from = "0";
+	} else {
+		$from = time() - (1.1 * 60 * 60 * 24 * 3); // 3 Tage
 	}
 
 	/** Daten für jeden Sensor auslesen */

@@ -25,7 +25,7 @@ $return = array('status' => 'err');
 $url = explode("/", @trim($_GET['url'], "/"));
 
 /** Daten des Standardusers benutzen */
-if (isset($url['0']) && $url['0'] == 'show')
+if (isset($url['0']) && $url['0'] == 'show' && empty($_GET['apikey']))
 {
 	$_GET['apikey'] = $api_key;
 }
