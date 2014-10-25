@@ -32,7 +32,7 @@ getTemp(){
 
 		if [ "$#" == '0' ]; then
 			# API abfragen
-			request="$server/v1/log/temp/$sensor/$temp&apikey=$apikey"
+			request="$server/api/v1/log/temp/$sensor/$temp&apikey=$apikey"
 			status=`curl -X GET "$request" 2> /dev/null | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["status"]' 2> /dev/null`
 		elif [ "$1" == 'show' ]; then
 			status='ok'

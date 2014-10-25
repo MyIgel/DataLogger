@@ -59,9 +59,6 @@ $log = new logger($database, $api_key);
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
-	<!-- Morris CSS -->
-	<link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
-
 	<!-- Site CSS -->
 	<link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -159,7 +156,6 @@ $log = new logger($database, $api_key);
 <script src="assets/js/flot/jquery.flot.selection.js"></script>
 
 <script>
-
 <?php
 if ($sensors = $log->getSensor())
 {

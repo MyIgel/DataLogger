@@ -38,6 +38,7 @@ class logger
 			$this->err = 'The database hates me :( Error: ' . mysqli_connect_errno() . ' : ' . mysqli_connect_error();
 			die('{"status":"err","err":"' . $this->err . '"}');
 		}
+		$this->db->set_charset("utf8");
 		$this->user = $user;
 	}
 
