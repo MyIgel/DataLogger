@@ -186,7 +186,7 @@ var plot = $.plot($("#flottemp"),
 	/** Daten ausgeben */
 	foreach ($sensors as $sensor)
 	{
-		echo '{label: "' . htmlentities($sensor['name']) . '", data: ' . jsArray($data[$sensor['id']]) . ', points: { symbol: "circle", fillColor: "' . htmlentities($sensor['options']['color']) . '" }, color: "' . htmlentities($sensor['options']['color']) . '"},' . "\n";
+		echo '{label: "' . htmlentities($sensor['name']) . '", data: ' . json_encode($data[$sensor['id']]) . ', points: { symbol: "circle", fillColor: "' . htmlentities($sensor['options']['color']) . '" }, color: "' . htmlentities($sensor['options']['color']) . '"},' . "\n";
 	}
 ?>
 		],
