@@ -27,10 +27,10 @@ include_once ('../../include/request.class.php');
 $return = array('status' => 'err');
 
 $apiKey = '';
-if(!empty($_POST['apikey'])){
-	$apiKey = $_POST['apikey'];
-} else if(!empty($_GET['apikey'])){
-	$apiKey = $_GET['apikey'];
+if(Request::post('apikey')){
+	$apiKey = Request::post('apikey');
+} else if(Request::get('apikey')){
+	$apiKey = Request::get('apikey');
 } else if($action == 'show'){
 	$apiKey = $api_key;
 }
@@ -53,6 +53,22 @@ if (!empty($apiKey)){
 		
 		if ($log->data($sensor['id'], $data)){
 			$return['status'] = 'ok';
+		}
+	});
+	
+	
+	/**
+	 * Sensoren auflisten
+	 * @example http://log.server.com/api/v1/list[&apikey=R4nd0MsE3dT8beChANgeD]
+	 */
+	Request::match('list', function($match){
+		global $log, $return;
+		
+		$sensoList = $log->getSensor();
+
+		if ($sensoList){
+			$return['status'] = 'ok';
+			$return['sensorList'] = $sensoList;
 		}
 	});
 	

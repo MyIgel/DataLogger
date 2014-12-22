@@ -71,7 +71,8 @@ class logger
 	 */
 	function getSensor($sensor = false, $type = false)
 	{
-		$query = "SELECT * FROM sensor WHERE user = '" . $this->db->real_escape_string($this->user) . "'";
+		$query = "SELECT id, name, description, sid AS sensorId, unit, type, options FROM `sensor`
+				  WHERE user = '" . $this->db->real_escape_string($this->user) . "'";
 		$query.= ($sensor) ? ' AND sid = "' . $this->db->real_escape_string($sensor) . '"' : '';
 		$query.= ($type) ? ' AND type = "' . $this->db->real_escape_string($type) . '"' : '';
 
@@ -81,6 +82,7 @@ class logger
 
 			while ($row = $result->fetch_array(MYSQL_ASSOC))
 			{
+				$row['options'] = json_decode($row['options'], true);
 				$sensors[$row['id']] = $row;
 			}
 

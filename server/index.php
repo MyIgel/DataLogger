@@ -144,7 +144,7 @@ $log = new logger($database, $api_key);
 
 	</div><!-- / container -->
 
-<!-- Bootstrap -->
+<!-- Javascript basics -->
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <!-- Flot -->
@@ -185,8 +185,7 @@ var plot = $.plot($("#flottemp"),
 	/** Daten ausgeben */
 	foreach ($sensors as $sensor)
 	{
-		$options = json_decode($sensor['options'], true);
-		echo '{label: "' . htmlentities($sensor['name']) . '", data: [' . jsArray($data[$sensor['id']]) . '], points: { symbol: "circle", fillColor: "#' . htmlentities($options['color']) . '" }, color: "#' . htmlentities($options['color']) . '"},' . "\n\n";
+		echo '{label: "' . htmlentities($sensor['name']) . '", data: [' . jsArray($data[$sensor['id']]) . '], points: { symbol: "circle", fillColor: "#' . htmlentities($sensor['options']['color']) . '" }, color: "#' . htmlentities($sensor['options']['color']) . '"},' . "\n";
 	}
 ?>
 		],
