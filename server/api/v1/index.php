@@ -16,16 +16,15 @@
  * @var int
  */
 define('_API', 1);
+header('Content-type: application/json');
 
 /** Kernfunktionen laden */
 include_once ('../../include/config.php');
 include_once ('../../include/functions.php');
+include_once ('../../include/request.class.php');
+
 
 $return = array('status' => 'err');
-$url = explode("/", @trim($_GET['url'], "/"));
-$action = @$url[0];
-$type = @$url[1];
-$sensorNo = @$url[2];
 
 $apiKey = '';
 if(!empty($_POST['apikey'])){
@@ -36,58 +35,66 @@ if(!empty($_POST['apikey'])){
 	$apiKey = $api_key;
 }
 
-
-if (!empty($apiKey) && !empty($action))
-{
+if (!empty($apiKey)){
 	$log = new logger($database, $apiKey);
-
-	/** Daten hinzufügen */
-	if ($action == 'log') // http://log.server.com/api/v1/log/temp/[SensorNo]/[SensorData]&apikey=R4nd0MsE3dT8beChANgeD
-	{
-		$data = @$url[3];
+	
+	
+	/** 
+	 * Daten hinzufügen
+	 * @example http://log.server.com/api/v1/log/temp/SensorNo/SensorData&apikey=R4nd0MsE3dT8beChANgeD
+	 */
+	Request::match('log/([a-zA-Z]+)/(.+)/([0-9]+\.?[0-9]+?)', function($match){
+		global $log, $return;
+		$type = $match[0];
+		$sensorNo = $match[1];
+		$data = $match[2];
 		
-		if (!empty($type) && !empty($sensorNo) && !empty($data))
-		{
-			$sensor = current($log->getSensor($sensorNo, $type));
-
-			if ($log->data($sensor['id'], $data))
-			{
-				$return['status'] = 'ok';
-			}
+		$sensor = current($log->getSensor($sensorNo, $type));
+		
+		if ($log->data($sensor['id'], $data)){
+			$return['status'] = 'ok';
 		}
-	}
-	/** Daten ausgeben */
-	else if ($action == 'show') // http://log.server.com/api/v1/show/temp/[SensorNo][/from][/to]
-	{
-		$from = @$url[3];
-		$to = @$url[4];
+	});
+	
+	
+	/**
+	 * Daten auslesen
+	 * @example http://log.server.com/api/v1/show/temp/SensorNo[/from][/to][&apikey=R4nd0MsE3dT8beChANgeD]
+	 */
+	Request::match('show/([a-zA-Z]+)/(.+)', function($match){
+		global $log, $return;
+		$type = $match[0];
+		$data = explode('/', $match[1]);
+		$sensorNo = $data[0];
+		$from = @$data[1];
+		$to = @$data[2];
 		
-		if (!empty($type) && !empty($sensorNo))
-		{
-			$data = false;
+		$data = false;
+		$sensor = current($log->getSensor($sensorNo, $type));
 
-			if ($sensor = current($log->getSensor($sensorNo, $type)))
-			{
-				if (!empty($from))
-				{
-					if (!empty($to))
-					{
-						$data = $log->get($sensor['id'], $from, $to);
-					} else {
-						$data = $log->get($sensor['id'], $from);
-					}
+		if ($sensor){
+			
+			if (!empty($from)){
+				
+				if (!empty($to)){
+					
+					$data = $log->get($sensor['id'], $from, $to);
 				} else {
-					$data = $log->get($sensor['id']);
+					
+					$data = $log->get($sensor['id'], $from);
 				}
-			}
-
-			if ($data)
-			{
-				$return['status'] = 'ok';
-				$return['data'] = $data;
+				
+			} else {
+				
+				$data = $log->get($sensor['id']);
 			}
 		}
-	}
+
+		if ($data){
+			$return['status'] = 'ok';
+			$return['data'] = $data;
+		}
+	});
 }
 
 if ($return['status'] != 'ok')

@@ -144,11 +144,10 @@ $log = new logger($database, $api_key);
 
 	</div><!-- / container -->
 
-<!-- JavaScript -->
+<!-- Bootstrap -->
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-
-<!-- Page Specific Plugins -->
+<!-- Flot -->
 <script src="assets/js/flot/jquery.flot.js"></script>
 <script src="assets/js/flottooltip/js/jquery.flot.tooltip.min.js"></script>
 <script src="assets/js/flot/jquery.flot.resize.js"></script>
