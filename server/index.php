@@ -199,7 +199,7 @@ var plot = $.plot($("#flottemp"),
 		}
 	);
 
-	setInterval(function(){updateChart("#flottemp")}, 120*1000);
+	setInterval(function(){updateChart("#flottemp", <?php echo $from; ?>)}, 120*1000);
 <?php } ?>
 
 </script>

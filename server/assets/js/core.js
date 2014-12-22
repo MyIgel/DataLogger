@@ -1,21 +1,17 @@
 var url = '/api/v1';
 
-function updateChart(chart) {
+function updateChart(chart, rangeFrom, rangeTo) {
 	
 	var sensorDataset = [];
 	var sensors = getSensorList();
 	
 	for (var sensor in sensors) {
 		sensor = sensors[sensor];
-		var sensorData = getSensorData(sensor.sensorId);
-		
-		for (var d in sensorData) {
-			sensorData[d] = parseFloat(sensorData[d]) * 1000;
-		}
+		var sensorData = getSensorData(sensor.sensorId, rangeFrom, rangeTo);
 		
 		var data = {
 			label: sensor.name,
-			data:  getSensorData(sensor.sensorId),
+			data:  sensorData,
 			points: { symbol: "circle", fillColor: sensor.options.color },
 			color: sensor.options.color
 		}
@@ -52,10 +48,14 @@ function getSensorList(){
 	return {};
 }
 
-function getSensorData(sensorId){
+function getSensorData(sensorId, rangeFrom, rangeTo){
+	rangeFrom = rangeFrom || (Math.round((new Date()).getTime() / 1000)) - (1.1 * 60 * 60 * 24 * 3);
+	rangeTo = rangeTo || "NOW";
+	
 	var returnData = [];
+	
 	$.ajax({
-		url: url+"/show/temp/" + sensorId,
+		url: url+"/show/temp/" + sensorId + "/" + rangeFrom + "/" + rangeTo,
 		type: "GET",
     	async: false,
 		success: function (data) {
