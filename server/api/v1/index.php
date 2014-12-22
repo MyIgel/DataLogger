@@ -23,53 +23,60 @@ include_once ('../../include/functions.php');
 
 $return = array('status' => 'err');
 $url = explode("/", @trim($_GET['url'], "/"));
+$action = @$url[0];
+$type = @$url[1];
+$sensorNo = @$url[2];
 
-/** Daten des Standardusers benutzen */
-if (isset($url['0']) && $url['0'] == 'show' && empty($_GET['apikey']))
-{
-	$_GET['apikey'] = $api_key;
+$apiKey = '';
+if(!empty($_POST['apikey'])){
+	$apiKey = $_POST['apikey'];
+} else if(!empty($_GET['apikey'])){
+	$apiKey = $_GET['apikey'];
+} else if($action == 'show'){
+	$apiKey = $api_key;
 }
 
-if (isset($_GET['apikey']) && $_GET['apikey'] == $api_key && isset($url['0']))
+
+if (!empty($apiKey) && !empty($action))
 {
-	$log = new logger($database, $_GET['apikey']);
+	$log = new logger($database, $apiKey);
 
 	/** Daten hinzufügen */
-	if ($url['0'] == 'log') // http://log.server.com/api/v1/log/temp/SenSorNo/[SenSorData]&apikey=R4nd0MsE3dT8beChANgeD
+	if ($action == 'log') // http://log.server.com/api/v1/log/temp/[SensorNo]/[SensorData]&apikey=R4nd0MsE3dT8beChANgeD
 	{
-		if (isset($url['1']) && isset($url['2']) && isset($url['3']))
+		$data = @$url[3];
+		
+		if (!empty($type) && !empty($sensorNo) && !empty($data))
 		{
-			$sensor = current($log->getSensor($url['2'], $url['1']));
+			$sensor = current($log->getSensor($sensorNo, $type));
 
-			if ($log->data($sensor['id'], $url['3']))
+			if ($log->data($sensor['id'], $data))
 			{
 				$return['status'] = 'ok';
 			}
-
 		}
 	}
 	/** Daten ausgeben */
-	else if ($url['0'] == 'show') // http://log.server.com/api/v1/show/temp/SenSorNo[/from][/to]
+	else if ($action == 'show') // http://log.server.com/api/v1/show/temp/[SensorNo][/from][/to]
 	{
-		if (isset($url['1']) && isset($url['2']))
+		$from = @$url[3];
+		$to = @$url[4];
+		
+		if (!empty($type) && !empty($sensorNo))
 		{
 			$data = false;
 
-			if ($sensor = current($log->getSensor($url['2'], $url['1'])))
+			if ($sensor = current($log->getSensor($sensorNo, $type)))
 			{
-				if (isset($url['3']))
+				if (!empty($from))
 				{
-					if (isset($url['4']))
+					if (!empty($to))
 					{
-						$data = $log->get($sensor['id'], $url['3'], $url['4']);
+						$data = $log->get($sensor['id'], $from, $to);
+					} else {
+						$data = $log->get($sensor['id'], $from);
 					}
-					else
-					{
-						$data = $log->get($sensor['id'], $url['3']);
-					}
-				}
-				else
-				{
+				} else {
 					$data = $log->get($sensor['id']);
 				}
 			}
@@ -79,10 +86,8 @@ if (isset($_GET['apikey']) && $_GET['apikey'] == $api_key && isset($url['0']))
 				$return['status'] = 'ok';
 				$return['data'] = $data;
 			}
-
 		}
 	}
-
 }
 
 if ($return['status'] != 'ok')

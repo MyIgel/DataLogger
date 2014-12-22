@@ -26,7 +26,7 @@ Zuerst müssen die MySQL Datenbanken angelegt werden:
 CREATE TABLE IF NOT EXISTS `data` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`sensorID` int(11) NOT NULL,
-	`data` text NOT NULL,
+	`data` float NOT NULL,
 	`time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `id` (`id`)
