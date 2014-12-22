@@ -31,8 +31,11 @@ if(Request::post('apikey')){
 	$apiKey = Request::post('apikey');
 } else if(Request::get('apikey')){
 	$apiKey = Request::get('apikey');
-} else if($action == 'show'){
-	$apiKey = $api_key;
+} else {
+	Request::match('(list|show)(.*)', function($m){
+		global $apiKey, $api_key;
+		$apiKey = $api_key;
+	});
 }
 
 if (!empty($apiKey)){

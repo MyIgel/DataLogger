@@ -52,7 +52,6 @@ $log = new logger($database, $api_key);
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="Data Logger Frontend">
-	<meta http-equiv="refresh" content="120">
 
 	<title>Datalogger</title>
 
@@ -153,6 +152,8 @@ $log = new logger($database, $api_key);
 <script src="assets/js/flot/jquery.flot.resize.js"></script>
 <script src="assets/js/flot/jquery.flot.time.js"></script>
 <script src="assets/js/flot/jquery.flot.selection.js"></script>
+<!-- Core JS -->
+<script src="assets/js/core.js"></script>
 
 <script>
 <?php
@@ -185,7 +186,7 @@ var plot = $.plot($("#flottemp"),
 	/** Daten ausgeben */
 	foreach ($sensors as $sensor)
 	{
-		echo '{label: "' . htmlentities($sensor['name']) . '", data: [' . jsArray($data[$sensor['id']]) . '], points: { symbol: "circle", fillColor: "#' . htmlentities($sensor['options']['color']) . '" }, color: "#' . htmlentities($sensor['options']['color']) . '"},' . "\n";
+		echo '{label: "' . htmlentities($sensor['name']) . '", data: ' . jsArray($data[$sensor['id']]) . ', points: { symbol: "circle", fillColor: "' . htmlentities($sensor['options']['color']) . '" }, color: "' . htmlentities($sensor['options']['color']) . '"},' . "\n";
 	}
 ?>
 		],
@@ -198,6 +199,7 @@ var plot = $.plot($("#flottemp"),
 		}
 	);
 
+	setInterval(function(){updateChart("#flottemp")}, 120*1000);
 <?php } ?>
 
 </script>

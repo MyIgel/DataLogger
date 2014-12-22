@@ -42,10 +42,15 @@ function jsArray($data)
 {
 	if (is_array($data) && $data = json_encode($data, true))
 	{
-		$data = str_replace('","', "],[", $data);
+		$data = str_replace('","', '],[', $data);
 		$data = str_replace('{"', '[', $data);
 		$data = str_replace('"}', ']', $data);
 		$data = str_replace('":"', ',', $data);
+		
+		$data = str_replace('{"', '[', $data);
+		$data = str_replace('":', ',', $data);
+		$data = str_replace(',"', '], [', $data);
+		$data = str_replace('}', ']', $data);
 		return $data;
 	}
 	return false;

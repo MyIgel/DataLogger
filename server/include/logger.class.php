@@ -118,7 +118,7 @@ class logger
 
 			while ($row = $result->fetch_array(MYSQL_ASSOC))
 			{
-				$data[$row['time']] = $row['data'];
+				$data[] = array((int)$row['time'],floatval($row['data']));
 			}
 
 			return $data;
