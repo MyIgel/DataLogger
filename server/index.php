@@ -67,7 +67,7 @@ if (isset($_GET['day'])) {
 	<title>Datalogger</title>
 
 	<!-- Bootstrap core CSS -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 
 	<!-- Site CSS -->
 	<link rel="stylesheet" href="assets/css/style.css">
@@ -160,8 +160,8 @@ if (isset($_GET['day'])) {
 	</div><!-- / container -->
 
 <!-- Javascript basics -->
-<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 <!-- Flot -->
 <script src="assets/js/flot/jquery.flot.js"></script>
 <script src="assets/js/flottooltip/js/jquery.flot.tooltip.min.js"></script>
