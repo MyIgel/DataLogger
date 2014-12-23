@@ -8,6 +8,9 @@ function updateChart(chart, rangeFrom, rangeTo) {
 	for (var sensor in sensors) {
 		sensor = sensors[sensor];
 		var sensorData = getSensorData(sensor.sensorId, rangeFrom, rangeTo);
+		if(sensorData.length == 0){
+			continue;
+		}
 		
 		var data = {
 			label: sensor.name,
@@ -27,7 +30,7 @@ function updateChart(chart, rangeFrom, rangeTo) {
 		series: {lines: {show: true, fill: true}}
 	};
 	console.log(sensorDataset);
-	return $.plot($(chart), sensorDataset, options);
+	return $.plot(chart, sensorDataset, options);
 }
 
 function getSensorList(){
@@ -45,7 +48,7 @@ function getSensorList(){
 	if(returnData.status == "ok" && returnData.sensorList){
 		return returnData.sensorList;
 	}
-	return {};
+	return [];
 }
 
 function getSensorData(sensorId, rangeFrom, rangeTo){
@@ -67,5 +70,5 @@ function getSensorData(sensorId, rangeFrom, rangeTo){
 	if(returnData.status == "ok" && returnData.data){
 		return returnData.data;
 	}
-	return {};
+	return [];
 }

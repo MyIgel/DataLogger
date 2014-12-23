@@ -9,3 +9,6 @@
   width: 100%;
   height: 100%;
 }
+
+.panel .panel-heading .btn.btn-sm { margin-top: -6px; }
+.panel .panel-heading .btn.btn-xs { margin-top: -3px; }

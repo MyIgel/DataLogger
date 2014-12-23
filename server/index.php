@@ -44,6 +44,17 @@ include_once ('include/functions.php');
 
 /** Logginginstanz starten */
 $log = new logger($database, $api_key);
+
+/** Zeitspanne berechnen, welche angezeigt werden soll */
+if (isset($_GET['day'])) {
+	$from = time() - (1.01 * 60 * 60 * 24 * $_GET['day']); // 24 Std.
+} else if (isset($_GET['hour'])) {
+	$from = time() - (1.1 * 60 * 60 * $_GET['hour']); // x Std.
+} else if(isset($_GET['time']) && $_GET['time'] == 'all') {
+	$from = "0";
+} else {
+	$from = time() - (1.1 * 60 * 60 * 24 * 3); // 3 Tage
+}
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -130,7 +141,12 @@ $log = new logger($database, $api_key);
 				<h2>Temperatur</h2>
 				<div class="panel panel-primary">
 					<div class="panel-heading">
-						<h3 class="panel-title"><i class="glyphicon glyphicon-signal"></i> </h3>
+						<h3 class="panel-title">
+							<i class="glyphicon glyphicon-signal"></i> 
+							<button class="btn btn-info pull-right btn-sm" onclick="javascript:updateChart($('#flottemp'), <?php echo $from; ?>)">
+								<i class="glyphicon glyphicon-refresh"></i>
+							</button>
+						</h3>
 					</div>
 					<div class="panel-body">
 						<div class="flot-chart">
@@ -161,21 +177,13 @@ if ($sensors = $log->getSensor())
 {
 	$data = array();
 
-	/** Zeitspanne berechnen, welche angezeigt werden soll */
-	if (isset($_GET['day'])) {
-		$from = time() - (1.01 * 60 * 60 * 24 * $_GET['day']); // 24 Std.
-	} else if (isset($_GET['hour'])) {
-		$from = time() - (1.1 * 60 * 60 * $_GET['hour']); // x Std.
-	} else if(isset($_GET['time']) && $_GET['time'] == 'all') {
-		$from = "0";
-	} else {
-		$from = time() - (1.1 * 60 * 60 * 24 * 3); // 3 Tage
-	}
-
 	/** Daten für jeden Sensor auslesen */
 	foreach ($sensors as $sensor)
 	{
 		$data[$sensor['id']] = getData($sensor['id'], $from);
+		if(empty($data[$sensor['id']])){
+			unset($sensors[$sensor['id']]);
+		}
 	}
 ?>
 
@@ -199,7 +207,7 @@ var plot = $.plot($("#flottemp"),
 		}
 	);
 
-	setInterval(function(){updateChart("#flottemp", <?php echo $from; ?>)}, 120*1000);
+	setInterval(function(){updateChart($("#flottemp"), <?php echo $from; ?>)}, 120*1000);
 <?php } ?>
 
 </script>
