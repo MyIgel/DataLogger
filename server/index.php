@@ -142,8 +142,8 @@ if (isset($_GET['day'])) {
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<h3 class="panel-title">
-							<i class="glyphicon glyphicon-signal"></i> 
-							<button class="btn btn-info pull-right btn-sm" onclick="javascript:updateChart($('#flottemp'), <?php echo $from; ?>)">
+							<i class="glyphicon glyphicon-signal"></i>
+							<button class="btn btn-info pull-right btn-sm" onclick="javascript:updateChart($('#flottemp'), <?php echo $from+1; ?>)">
 								<i class="glyphicon glyphicon-refresh"></i>
 							</button>
 						</h3>
@@ -207,7 +207,7 @@ var plot = $.plot($("#flottemp"),
 		}
 	);
 
-	setInterval(function(){updateChart($("#flottemp"), <?php echo $from; ?>)}, 120*1000);
+	setInterval(function(){updateChart($("#flottemp"), <?php echo $from+1; ?>)}, 120*1000);
 <?php } ?>
 
 </script>

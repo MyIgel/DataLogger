@@ -80,7 +80,7 @@ class logger
 		{
 			$sensors = array();
 
-			while ($row = $result->fetch_array(MYSQL_ASSOC))
+			while ($row = $result->fetch_array())
 			{
 				$row['options'] = json_decode($row['options'], true);
 				$sensors[$row['id']] = $row;

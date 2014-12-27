@@ -46,7 +46,7 @@ if (!empty($apiKey)){
 	 * Daten hinzufügen
 	 * @example http://log.server.com/api/v1/log/temp/SensorNo/SensorData&apikey=R4nd0MsE3dT8beChANgeD
 	 */
-	Request::match('log/([a-zA-Z]+)/(.+)/([0-9]+\.?[0-9]+?)', function($match){
+	Request::match('log/([a-zA-Z]+)/(.+)/(.+)', function($match){
 		global $log, $return;
 		$type = $match[0];
 		$sensorNo = $match[1];
