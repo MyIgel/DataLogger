@@ -24,26 +24,26 @@ Auf dem Server muss PHP und MySQL laufen und htaccess aktiv sein, was aber norma
 Zuerst müssen die MySQL Datenbanken angelegt werden:
 ```mysql
 CREATE TABLE IF NOT EXISTS `data` (
-	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`sensorID` int(11) NOT NULL,
-	`data` float NOT NULL,
-	`time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY (`id`),
-	UNIQUE KEY `id` (`id`)
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `data` float NOT NULL,
+    `sensorID` int(11) NOT NULL,
+    `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 ```mysql
 CREATE TABLE IF NOT EXISTS `sensor` (
-	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`name` varchar(20) NOT NULL,
-	`description` text NOT NULL,
-	`sid` varchar(15) NOT NULL COMMENT 'Sensor ID',
-	`unit` varchar(11) NOT NULL,
-	`type` varchar(10) DEFAULT NULL,
-	`options` text,
-	`user` varchar(20) NOT NULL,
-	PRIMARY KEY (`id`),
-	UNIQUE KEY `id` (`id`)
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `name` varchar(20) NOT NULL,
+    `description` text NOT NULL,
+    `sid` varchar(15) NOT NULL COMMENT 'Sensor ID',
+    `unit` varchar(11) NOT NULL,
+    `type` varchar(10) DEFAULT NULL,
+    `options` text,
+    `user` varchar(20) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 

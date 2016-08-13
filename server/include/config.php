@@ -14,12 +14,12 @@ $api_key = 'R4nd0MsE3dT8beChANgeD';
 
 /** Datenbank Konfiguration */
 $database = array(
-	/** Die Adresse des MYSQL-Servers, normalerweise localhost */
-	'host' => 'localhost',
-	/** Benutzer der MySQL Datenbank */
-	'user' => 'mysqlLogUser',
-	/** Passwort für die MySQL Datenbank */
-	'password' => 'mysqlLogPass',
-	/** Name der MySQL Datenbank */
-	'database' => 'mysqlLogDB',
+    /** Die Adresse des MYSQL-Servers, normalerweise localhost */
+    'host'     => 'localhost',
+    /** Benutzer der MySQL Datenbank */
+    'user'     => 'mysqlLogUser',
+    /** Passwort für die MySQL Datenbank */
+    'password' => 'mysqlLogPass',
+    /** Name der MySQL Datenbank */
+    'database' => 'mysqlLogDB',
 );
