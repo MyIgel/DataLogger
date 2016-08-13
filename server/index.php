@@ -39,11 +39,15 @@
 define('_API', 1);
 
 /** Kernfunktionen laden */
-include_once('include/config.php');
-include_once('include/functions.php');
+require_once __DIR__ . '/include/functions.php';
 
-/** Logginginstanz starten */
-$log = new logger($database, $api_key);
+$config = include __DIR__ . '/include/config.php';
+if (!is_array($config)) {
+    die('Not configured');
+}
+
+/** Logginginstanz initialisieren */
+$log = new Logger($config['database'], $config['apiKey']);
 
 /** Zeitspanne berechnen, welche angezeigt werden soll */
 if (isset($_GET['day'])) {
@@ -99,7 +103,7 @@ if (isset($_GET['day'])) {
                 <a>&nbsp;</a>
             </li>
             <li class="active">
-                <a href="<?= $_SERVER['PHP_SELF']; ?>"><i class="glyphicon glyphicon-signal"></i> Logger </a>
+                <a href="<?php echo $_SERVER['PHP_SELF']; ?>"><i class="glyphicon glyphicon-signal"></i> Logger </a>
             </li>
             <li class="dropdown messages-dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-time"></i> Zeit
@@ -115,7 +119,7 @@ if (isset($_GET['day'])) {
                     <li><a href="?day=14">2 Wochen</a></li>
                     <li><a href="?day=30">1 Monat</a></li>
                     <li class="divider"></li>
-                    <li><a href="<?= $_SERVER['PHP_SELF']; ?>?time=all">Alle Daten</a></li>
+                    <li><a href="<?php echo $_SERVER['PHP_SELF']; ?>?time=all">Alle Daten</a></li>
                 </ul>
             </li>
         </ul>
@@ -137,7 +141,8 @@ if (isset($_GET['day'])) {
         </div>
         <div class="col-lg-4">
             <ul class="list-group">
-                <li class="list-group-item">Gesamt Datensätze: <span class="badge"><?= $log->stats('total'); ?></span>
+                <li class="list-group-item">Gesamt Datensätze: <span
+                        class="badge"><?php echo $log->stats('total'); ?></span>
                 </li>
             </ul>
         </div>
@@ -151,14 +156,14 @@ if (isset($_GET['day'])) {
                     <h3 class="panel-title">
                         <i class="glyphicon glyphicon-signal"></i>
                         <button class="btn btn-info pull-right btn-sm"
-                                onclick="javascript:updateChart($('#flottemp'), <?php echo $from; ?>)">
+                                onclick="updateChart($('#flotTemp'), <?php echo $from; ?>)">
                             <i class="glyphicon glyphicon-refresh"></i>
                         </button>
                     </h3>
                 </div>
                 <div class="panel-body">
                     <div class="flot-chart">
-                        <div class="flot-chart-content" id="flottemp"></div>
+                        <div class="flot-chart-content" id="flotTemp"></div>
                     </div>
                 </div>
             </div>
@@ -183,7 +188,7 @@ if (isset($_GET['day'])) {
     <?php
     if ($sensors = $log->getSensor())
     {
-    $data = array();
+    $data = [];
 
     /** Daten für jeden Sensor auslesen */
     foreach ($sensors as $sensor) {
@@ -194,8 +199,7 @@ if (isset($_GET['day'])) {
     }
     ?>
 
-
-    var plot = $.plot($("#flottemp"),
+    var plot = $.plot($("#flotTemp"),
         [
             <?php
             /** Daten ausgeben */
@@ -205,7 +209,7 @@ if (isset($_GET['day'])) {
             ?>
         ],
         {
-            xaxis: {mode: "time", timezone: "browser", timeformat: "%d.%m.%y, %H:%M:%S",},
+            xaxis: {mode: "time", timezone: "browser", timeformat: "%d.%m.%y, %H:%M:%S"},
             yaxis: {},
             grid: {hoverable: true, clickable: true},
             tooltip: true, tooltipOpts: {content: "%s am %x: %y.2°C", shifts: {x: -60, y: 25}},
@@ -214,10 +218,9 @@ if (isset($_GET['day'])) {
     );
 
     setInterval(function () {
-        updateChart($("#flottemp"), <?php echo $from; ?>)
+        updateChart($("#flotTemp"), <?php echo $from; ?>)
     }, 120 * 1000);
     <?php } ?>
-
 </script>
 
 </body>

@@ -10,14 +10,14 @@
  */
 
 /** Logger Grundfunktion laden */
-include_once('logger.class.php');
+require_once __DIR__ . '/Logger.php';
 
 /**
  * Gibt die Daten des Sensors zurück
  *
- * @param string $sensor Sensor ID
- * @param int    $from   (optional) Timestamp ab dem die Daten ausgegeben werden
- * @param int    $to     (optional) Timestamp bis zu diesem werden die Daten ausgegeben
+ * @param string     $sensor Sensor ID
+ * @param int        $from   (optional) Timestamp ab dem die Daten ausgegeben werden
+ * @param int|string $to     (optional) Timestamp bis zu diesem werden die Daten ausgegeben
  * @return array|bool Gibt die Daten im Erfolgsfall einem Array zurück, ansonsten false
  */
 function getData($sensor, $from = 0, $to = "NOW")

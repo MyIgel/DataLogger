@@ -9,7 +9,6 @@
  */
 class Request
 {
-
     /**
      * Url Match
      *
@@ -18,11 +17,11 @@ class Request
      * @example
      *  ([a-zA-Z]+)/([0-9]{,3}) für eine beliebige Zeichenkette und eine max. dreistellige id
      *
-     * @param string $path     Regex der Url
-     * @param object $fucntion Aufzurufende Funktion
+     * @param string   $path     Regex der Url
+     * @param callable $function Aufzurufende Funktion
      * @return bool
      */
-    public static function match($path, $function)
+    public static function match($path, callable $function)
     {
         $url = trim(self::get('url', ''), '/ ');
         $path = str_replace('/', '\\/', $path);

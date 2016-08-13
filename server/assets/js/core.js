@@ -26,7 +26,7 @@ function updateChart(chart, rangeFrom, rangeTo) {
     }
 
     var options = {
-        xaxis: {mode: "time", timezone: "browser", timeformat: "%d.%m.%y, %H:%M:%S",},
+        xaxis: {mode: "time", timezone: "browser", timeformat: "%d.%m.%y, %H:%M:%S"},
         yaxis: {},
         grid: {hoverable: true, clickable: true},
         tooltip: true,

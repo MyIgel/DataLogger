@@ -14,7 +14,7 @@
  *
  * Speichert Daten, Liest sie wieder aus und erzeugt statistische Informationen
  */
-class logger
+class Logger
 {
     /** MySQLi Dantenbankverbindung */
     private $db;
@@ -66,9 +66,9 @@ class logger
      *
      * @param int    $sensor (optional) ID des Sensors
      * @param string $type   (optional) Art des Sensors
-     * @return array Informationen über die Sensoren/den Sensor
+     * @return array|false Informationen über die Sensoren/den Sensor
      */
-    function getSensor($sensor = false, $type = false)
+    function getSensor($sensor = null, $type = null)
     {
         $query = "SELECT id, name, description, sid AS sensorId, unit, type, options FROM `sensor`
 				  WHERE user = '" . $this->db->real_escape_string($this->user) . "'";
@@ -76,9 +76,9 @@ class logger
         $query .= ($type) ? ' AND type = "' . $this->db->real_escape_string($type) . '"' : '';
 
         if ($result = $this->db->query($query)) {
-            $sensors = array();
+            $sensors = [];
 
-            while ($row = $result->fetch_array(MYSQL_ASSOC)) {
+            while ($row = $result->fetch_assoc()) {
                 $row['options'] = json_decode($row['options'], true);
                 $sensors[$row['id']] = $row;
             }
@@ -98,7 +98,7 @@ class logger
      * @param int        $sensor ID des Sensors
      * @param int        $from   (optional) Timestamp ab welchem die daten ausgelesen werden
      * @param int|string $to     (optional) Timestamp bis wo die Daten ausgelesen werden. Kann auch NOW sein
-     * @return array Daten
+     * @return array|false Daten
      */
     function get($sensor, $from = 0, $to = "NOW")
     {
@@ -110,10 +110,10 @@ class logger
 					AND FROM_UNIXTIME(" . $this->db->real_escape_string($to) . ")";
 
         if ($result = $this->db->query($query)) {
-            $data = array();
+            $data = [];
 
-            while ($row = $result->fetch_array(MYSQL_ASSOC)) {
-                $data[] = array((int)$row['time'], floatval($row['data']));
+            while ($row = $result->fetch_assoc()) {
+                $data[] = [(int)$row['time'], floatval($row['data'])];
             }
 
             return $data;
@@ -137,7 +137,7 @@ class logger
             $result = $this->db->query("SELECT count(id) AS total FROM `data`");
 
             if ($result) {
-                $data = $result->fetch_array(MYSQL_ASSOC);
+                $data = $result->fetch_assoc();
                 return $data['total'];
             }
         }

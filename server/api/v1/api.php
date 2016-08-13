@@ -19,12 +19,17 @@ define('_API', 1);
 header('Content-type: application/json');
 
 /** Kernfunktionen laden */
-include_once('../../include/config.php');
-include_once('../../include/functions.php');
-include_once('../../include/request.class.php');
+require_once __DIR__ . '/../../include/functions.php';
+require_once __DIR__ . '/../../include/Request.php';
 
+$config = require_once __DIR__ . '/../../include/config.php';
+$return = ['status' => 'err'];
 
-$return = array('status' => 'err');
+if (!is_array($config)) {
+    header('HTTP/1.0 500 Internal Server Error');
+    json_encode(['status' => 'error', 'message' => 'Not configured']);
+    exit;
+}
 
 $apiKey = '';
 if (Request::post('apikey')) {
@@ -33,7 +38,7 @@ if (Request::post('apikey')) {
     if (Request::get('apikey')) {
         $apiKey = Request::get('apikey');
     } else {
-        Request::match('(list|show)(.*)', function ($m) {
+        Request::match('(list|show)(.*)', function () {
             global $apiKey, $api_key;
             $apiKey = $api_key;
         });
@@ -41,8 +46,7 @@ if (Request::post('apikey')) {
 }
 
 if (!empty($apiKey)) {
-    $log = new logger($database, $apiKey);
-
+    $log = new Logger($config['database'], $config['apiKey']);
 
     /**
      * Daten hinzufügen
@@ -62,7 +66,6 @@ if (!empty($apiKey)) {
         }
     });
 
-
     /**
      * Sensoren auflisten
      *
@@ -71,14 +74,13 @@ if (!empty($apiKey)) {
     Request::match('list', function ($match) {
         global $log, $return;
 
-        $sensoList = $log->getSensor();
+        $sensorList = $log->getSensor();
 
-        if ($sensoList) {
+        if ($sensorList) {
             $return['status'] = 'ok';
-            $return['sensorList'] = $sensoList;
+            $return['sensorList'] = $sensorList;
         }
     });
-
 
     /**
      * Daten auslesen
