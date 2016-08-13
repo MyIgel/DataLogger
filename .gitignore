@@ -7,7 +7,9 @@
 *.DS_Store
 .*.swp
 *.out
-doc/*
+
+/doc/*
+/.idea/
 
 # except this file
 !.gitignore
