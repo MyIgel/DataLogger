@@ -20,6 +20,7 @@ header('Content-type: application/json');
 
 /** Kernfunktionen laden */
 require_once __DIR__ . '/../../include/functions.php';
+require_once __DIR__ . '/../../include/Logger.php';
 require_once __DIR__ . '/../../include/Request.php';
 
 $config = require_once __DIR__ . '/../../include/config.php';
@@ -34,15 +35,13 @@ if (!is_array($config)) {
 $apiKey = '';
 if (Request::post('apikey')) {
     $apiKey = Request::post('apikey');
+} elseif (Request::get('apikey')) {
+    $apiKey = Request::get('apikey');
 } else {
-    if (Request::get('apikey')) {
-        $apiKey = Request::get('apikey');
-    } else {
-        Request::match('(list|show)(.*)', function () {
-            global $apiKey, $api_key;
-            $apiKey = $api_key;
-        });
-    }
+    Request::match('(list|show)(.*)', function () use ($config) {
+        global $apiKey;
+        $apiKey = $config['apiKey'];
+    });
 }
 
 if (!empty($apiKey)) {
@@ -71,7 +70,7 @@ if (!empty($apiKey)) {
      *
      * @example http://log.server.com/api/v1/list[&apikey=R4nd0MsE3dT8beChANgeD]
      */
-    Request::match('list', function ($match) {
+    Request::match('list', function () {
         global $log, $return;
 
         $sensorList = $log->getSensor();

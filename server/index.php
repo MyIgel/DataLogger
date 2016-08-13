@@ -27,6 +27,7 @@
  * @copyright      2014 Igor Scheller
  * @license        http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
+use Caleano\DataLogger\Template;
 
 /**
  * Wird von der aufgerufenen Seite gesetzt
@@ -40,6 +41,9 @@ define('_API', 1);
 
 /** Kernfunktionen laden */
 require_once __DIR__ . '/include/functions.php';
+require_once __DIR__ . '/include/Logger.php';
+require_once __DIR__ . '/include/Request.php';
+require_once __DIR__ . '/include/Template.php';
 
 $config = include __DIR__ . '/include/config.php';
 if (!is_array($config)) {
@@ -50,178 +54,49 @@ if (!is_array($config)) {
 $log = new Logger($config['database'], $config['apiKey']);
 
 /** Zeitspanne berechnen, welche angezeigt werden soll */
-if (isset($_GET['day'])) {
-    $from = time() - (1.01 * 60 * 60 * 24 * $_GET['day']); // 24 Std.
+if (Request::get('day')) {
+    $from = time() - (1.01 * 60 * 60 * 24 * Request::get('day')); // 24 Std.
 } else {
-    if (isset($_GET['hour'])) {
-        $from = time() - (1.1 * 60 * 60 * $_GET['hour']); // x Std.
+    if (Request::get('hour')) {
+        $from = time() - (1.1 * 60 * 60 * Request::get('hour')); // x Std.
     } else {
-        if (isset($_GET['time']) && $_GET['time'] == 'all') {
-            $from = "0";
+        if (Request::get('time') && Request::get('time') == 'all') {
+            $from = '0';
         } else {
             $from = time() - (1.1 * 60 * 60 * 24 * 3); // 3 Tage
         }
     }
 }
-?>
-<!DOCTYPE html>
-<html lang="de">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Data Logger Frontend">
-
-    <title>Datalogger</title>
-
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-
-    <!-- Site CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
-
-<body>
-
-<!-- Sidebar -->
-<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#">Data Logger</a>
-    </div>
-
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-            <li>
-                <a>&nbsp;</a>
-            </li>
-            <li class="active">
-                <a href="<?php echo $_SERVER['PHP_SELF']; ?>"><i class="glyphicon glyphicon-signal"></i> Logger </a>
-            </li>
-            <li class="dropdown messages-dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-time"></i> Zeit
-                    <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="?hour=1">1 Stunde</a></li>
-                    <li><a href="?hour=5">5 Stunden</a></li>
-                    <li><a href="?hour=12">12 Stunden</a></li>
-                    <li><a href="?hour=24">24 Stunden</a></li>
-                    <li class="divider"></li>
-                    <li><a href="?day=3">3 Tage</a></li>
-                    <li><a href="?day=7">1 Woche</a></li>
-                    <li><a href="?day=14">2 Wochen</a></li>
-                    <li><a href="?day=30">1 Monat</a></li>
-                    <li class="divider"></li>
-                    <li><a href="<?php echo $_SERVER['PHP_SELF']; ?>?time=all">Alle Daten</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div><!-- /.navbar-collapse -->
-</nav>
-
-<div class="container">
-
-    <div class="row">
-        <div class="col-lg-8">
-            <h1>Temp
-                <small>@HOME</small>
-            </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="glyphicon glyphicon-home"></i> Stats</a>
-                </li>
-                <li class="active"><i class="glyphicon glyphicon-signal"></i> Data</li>
-            </ol>
-        </div>
-        <div class="col-lg-4">
-            <ul class="list-group">
-                <li class="list-group-item">Gesamt Datensätze: <span
-                        class="badge"><?php echo $log->stats('total'); ?></span>
-                </li>
-            </ul>
-        </div>
-    </div><!-- /.row -->
-
-    <div class="row">
-        <div class="col-lg-12">
-            <h2>Temperatur</h2>
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                        <i class="glyphicon glyphicon-signal"></i>
-                        <button class="btn btn-info pull-right btn-sm"
-                                onclick="updateChart($('#flotTemp'), <?php echo $from; ?>)">
-                            <i class="glyphicon glyphicon-refresh"></i>
-                        </button>
-                    </h3>
-                </div>
-                <div class="panel-body">
-                    <div class="flot-chart">
-                        <div class="flot-chart-content" id="flotTemp"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div><!-- /.row -->
-
-</div><!-- / container -->
-
-<!-- Javascript basics -->
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-<!-- Flot -->
-<script src="assets/js/flot/jquery.flot.js"></script>
-<script src="assets/js/flottooltip/js/jquery.flot.tooltip.min.js"></script>
-<script src="assets/js/flot/jquery.flot.resize.js"></script>
-<script src="assets/js/flot/jquery.flot.time.js"></script>
-<script src="assets/js/flot/jquery.flot.selection.js"></script>
-<!-- Core JS -->
-<script src="assets/js/core.js"></script>
-
-<script>
-    <?php
-    if ($sensors = $log->getSensor())
-    {
+$sensorData = '';
+if ($sensors = $log->getSensor()) {
     $data = [];
 
     /** Daten für jeden Sensor auslesen */
     foreach ($sensors as $sensor) {
         $data[$sensor['id']] = getData($sensor['id'], $from);
+
         if (empty($data[$sensor['id']])) {
             unset($sensors[$sensor['id']]);
+            continue;
         }
+
+        $sensorData .= json_encode([
+                'label'  => htmlentities($sensor['name']),
+                'data'   => $data[$sensor['id']],
+                'points' => [
+                    'symbol'    => 'circle',
+                    'fillColor' => htmlentities($sensor['options']['color']),
+                    'color'     => htmlentities($sensor['options']['color']),
+                ],
+            ]) . ',' . PHP_EOL;
     }
-    ?>
+}
+$script = Template::render('script', ['/*SENSORDATA*/' => $sensorData, '/*FROM*/' => $from]);
 
-    var plot = $.plot($("#flotTemp"),
-        [
-            <?php
-            /** Daten ausgeben */
-            foreach ($sensors as $sensor) {
-                echo '{label: "' . htmlentities($sensor['name']) . '", data: ' . json_encode($data[$sensor['id']]) . ', points: { symbol: "circle", fillColor: "' . htmlentities($sensor['options']['color']) . '" }, color: "' . htmlentities($sensor['options']['color']) . '"},' . "\n";
-            }
-            ?>
-        ],
-        {
-            xaxis: {mode: "time", timezone: "browser", timeformat: "%d.%m.%y, %H:%M:%S"},
-            yaxis: {},
-            grid: {hoverable: true, clickable: true},
-            tooltip: true, tooltipOpts: {content: "%s am %x: %y.2°C", shifts: {x: -60, y: 25}},
-            series: {lines: {show: true, fill: true}}
-        }
-    );
-
-    setInterval(function () {
-        updateChart($("#flotTemp"), <?php echo $from; ?>)
-    }, 120 * 1000);
-    <?php } ?>
-</script>
-
-</body>
-</html>
+echo Template::render('index', [
+    '%SELF%'     => $_SERVER['PHP_SELF'],
+    '%TOTAL%'    => $log->stats('total'),
+    '/*FROM*/'   => $from,
+    '/*SCRIPT*/' => $script,
+]);

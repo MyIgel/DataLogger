@@ -9,9 +9,6 @@
  * @license        http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
 
-/** Logger Grundfunktion laden */
-require_once __DIR__ . '/Logger.php';
-
 /**
  * Gibt die Daten des Sensors zurück
  *
