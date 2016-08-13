@@ -44,83 +44,86 @@ if (Request::post('apikey')) {
     });
 }
 
-if (!empty($apiKey)) {
-    $log = new Logger($config['database'], $config['apiKey']);
+if (empty($apiKey)) {
+    header('HTTP/1.0 401 Unauthorized');
+    json_encode(['status' => 'error', 'message' => 'Not authorized']);
+}
 
-    /**
-     * Daten hinzufügen
-     *
-     * @example http://log.server.com/api/v1/log/temp/SensorNo/SensorData&apikey=R4nd0MsE3dT8beChANgeD
-     */
-    Request::match('log/([a-zA-Z]+)/(.+)/([0-9]+\.?[0-9]+?)', function ($match) {
-        global $log, $return;
-        $type = $match[0];
-        $sensorNo = $match[1];
-        $data = $match[2];
+$log = new Logger($config['database'], $config['apiKey']);
 
-        $sensor = current($log->getSensor($sensorNo, $type));
+/**
+ * Daten hinzufügen
+ *
+ * @example http://log.server.com/api/v1/log/temp/SensorNo/SensorData&apikey=R4nd0MsE3dT8beChANgeD
+ */
+Request::match('log/([a-zA-Z]+)/(.+)/([0-9]+\.?[0-9]+?)', function ($match) {
+    global $log, $return;
+    $type = $match[0];
+    $sensorNo = $match[1];
+    $data = $match[2];
 
-        if ($log->data($sensor['id'], $data)) {
-            $return['status'] = 'ok';
-        }
-    });
+    $sensor = current($log->getSensor($sensorNo, $type));
 
-    /**
-     * Sensoren auflisten
-     *
-     * @example http://log.server.com/api/v1/list[&apikey=R4nd0MsE3dT8beChANgeD]
-     */
-    Request::match('list', function () {
-        global $log, $return;
+    if ($log->data($sensor['id'], $data)) {
+        $return['status'] = 'ok';
+    }
+});
 
-        $sensorList = $log->getSensor();
+/**
+ * Sensoren auflisten
+ *
+ * @example http://log.server.com/api/v1/list[&apikey=R4nd0MsE3dT8beChANgeD]
+ */
+Request::match('list', function () {
+    global $log, $return;
 
-        if ($sensorList) {
-            $return['status'] = 'ok';
-            $return['sensorList'] = $sensorList;
-        }
-    });
+    $sensorList = $log->getSensor();
 
-    /**
-     * Daten auslesen
-     *
-     * @example http://log.server.com/api/v1/show/temp/SensorNo[/from][/to][&apikey=R4nd0MsE3dT8beChANgeD]
-     */
-    Request::match('show/([a-zA-Z]+)/(.+)', function ($match) {
-        global $log, $return;
-        $type = $match[0];
-        $data = explode('/', $match[1]);
-        $sensorNo = $data[0];
-        $from = @$data[1];
-        $to = @$data[2];
+    if ($sensorList) {
+        $return['status'] = 'ok';
+        $return['sensorList'] = $sensorList;
+    }
+});
 
-        $data = false;
-        $sensor = current($log->getSensor($sensorNo, $type));
+/**
+ * Daten auslesen
+ *
+ * @example http://log.server.com/api/v1/show/temp/SensorNo[/from][/to][&apikey=R4nd0MsE3dT8beChANgeD]
+ */
+Request::match('show/([a-zA-Z]+)/(.+)', function ($match) {
+    global $log, $return;
+    $type = $match[0];
+    $data = explode('/', $match[1]);
+    $sensorNo = $data[0];
+    $from = @$data[1];
+    $to = @$data[2];
 
-        if ($sensor) {
+    $data = false;
+    $sensor = current($log->getSensor($sensorNo, $type));
 
-            if (!empty($from)) {
+    if ($sensor) {
 
-                if (!empty($to)) {
+        if (!empty($from)) {
 
-                    $data = $log->get($sensor['id'], $from, $to);
-                } else {
+            if (!empty($to)) {
 
-                    $data = $log->get($sensor['id'], $from);
-                }
-
+                $data = $log->get($sensor['id'], $from, $to);
             } else {
 
-                $data = $log->get($sensor['id']);
+                $data = $log->get($sensor['id'], $from);
             }
-        }
 
-        if ($data) {
-            $return['status'] = 'ok';
-            $return['data'] = $data;
+        } else {
+
+            $data = $log->get($sensor['id']);
         }
-    });
-}
+    }
+
+    if ($data) {
+        $return['status'] = 'ok';
+        $return['data'] = $data;
+    }
+});
 
 if ($return['status'] != 'ok') {
     header('HTTP/1.0 404 Not Found');
