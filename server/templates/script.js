@@ -1,7 +1,10 @@
-var plot = $.plot($("#flotTemp"),
-    [
-        /*SENSORDATA*/
-    ],
+/**
+ * Parse and update data
+ */
+
+var flotTemp = $('#flotTemp');
+var plot = $.plot(flotTemp,
+    [],
     {
         xaxis: {mode: "time", timezone: "browser", timeformat: "%d.%m.%y, %H:%M:%S"},
         yaxis: {},
@@ -11,9 +14,11 @@ var plot = $.plot($("#flotTemp"),
     }
 );
 
+updateChart(flotTemp, parseInt('/*FROM*/'));
+
 setInterval(
     function () {
-        updateChart($("#flotTemp"), parseInt('/*FROM*/'))
+        updateChart(flotTemp, parseInt('/*FROM*/'))
     },
     120 * 1000
 );

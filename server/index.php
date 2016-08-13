@@ -55,44 +55,16 @@ $log = new Logger($config['database'], $config['apiKey']);
 
 /** Zeitspanne berechnen, welche angezeigt werden soll */
 if (Request::get('day')) {
-    $from = time() - (1.01 * 60 * 60 * 24 * Request::get('day')); // 24 Std.
+    $from = (int)(time() - (1.01 * 60 * 60 * 24 * Request::get('day'))); // 24 Std.
+} elseif (Request::get('hour')) {
+    $from = (int)(time() - (1.1 * 60 * 60 * Request::get('hour'))); // x Std.
+} elseif (Request::get('time') && Request::get('time') == 'all') {
+    $from = 1;
 } else {
-    if (Request::get('hour')) {
-        $from = time() - (1.1 * 60 * 60 * Request::get('hour')); // x Std.
-    } else {
-        if (Request::get('time') && Request::get('time') == 'all') {
-            $from = '0';
-        } else {
-            $from = time() - (1.1 * 60 * 60 * 24 * 3); // 3 Tage
-        }
-    }
+    $from = (int)(time() - (1.1 * 60 * 60 * 24 * 3)); // 3 Tage
 }
 
-$sensorData = '';
-if ($sensors = $log->getSensor()) {
-    $data = [];
-
-    /** Daten für jeden Sensor auslesen */
-    foreach ($sensors as $sensor) {
-        $data[$sensor['id']] = getData($sensor['id'], $from);
-
-        if (empty($data[$sensor['id']])) {
-            unset($sensors[$sensor['id']]);
-            continue;
-        }
-
-        $sensorData .= json_encode([
-                'label'  => htmlentities($sensor['name']),
-                'data'   => $data[$sensor['id']],
-                'points' => [
-                    'symbol'    => 'circle',
-                    'fillColor' => htmlentities($sensor['options']['color']),
-                    'color'     => htmlentities($sensor['options']['color']),
-                ],
-            ]) . ',' . PHP_EOL;
-    }
-}
-$script = Template::render('script', ['/*SENSORDATA*/' => $sensorData, '/*FROM*/' => $from]);
+$script = Template::render('script', ['/*FROM*/' => $from]);
 
 echo Template::render('index', [
     '%SELF%'     => $_SERVER['PHP_SELF'],
