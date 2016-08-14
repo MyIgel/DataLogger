@@ -19,13 +19,12 @@ define('_API', 1);
 header('Content-type: application/json');
 
 /** Kernfunktionen laden */
-require_once __DIR__ . '/../../include/functions.php';
-require_once __DIR__ . '/../../include/Logger.php';
-require_once __DIR__ . '/../../include/Request.php';
+require_once __DIR__ . '/../../src/functions.php';
+require_once __DIR__ . '/../../src/Logger.php';
+require_once __DIR__ . '/../../src/Request.php';
 
-$config = require_once __DIR__ . '/../../include/config.php';
 $return = ['status' => 'err'];
-
+$config = @include __DIR__ . '/../../config.php';
 if (!is_array($config)) {
     header('HTTP/1.0 500 Internal Server Error');
     json_encode(['status' => 'error', 'message' => 'Not configured']);

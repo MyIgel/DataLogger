@@ -40,12 +40,12 @@ use Caleano\DataLogger\Template;
 define('_API', 1);
 
 /** Kernfunktionen laden */
-require_once __DIR__ . '/include/functions.php';
-require_once __DIR__ . '/include/Logger.php';
-require_once __DIR__ . '/include/Request.php';
-require_once __DIR__ . '/include/Template.php';
+require_once __DIR__ . '/src/functions.php';
+require_once __DIR__ . '/src/Logger.php';
+require_once __DIR__ . '/src/Request.php';
+require_once __DIR__ . '/src/Template.php';
 
-$config = include __DIR__ . '/include/config.php';
+$config = @include __DIR__ . '/config.php';
 if (!is_array($config)) {
     die('Not configured');
 }

@@ -46,8 +46,8 @@ CREATE TABLE IF NOT EXISTS `sensor` (
     UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
-
-und die Zugangsdaten in der `include/config.php` eingetragen werden, dann können die Dateien auf den Server hochgeladen werden.
+Und anschließend der Zugriff konfiguriert werden (config-default.php nach config.php kopieren).
+Dann können die Dateien auf den Server hochgeladen werden.
 
 
 Als Frontend arbeitet [Bootstrap](https://github.com/twbs/bootstrap "Twitter Bootstrap"), mit den jQuery-Erweiterungen [Flot](https://github.com/flot/flot) und [FlotTooltip](https://github.com/krzysu/flot.tooltip) zum anzeigen der Daten.

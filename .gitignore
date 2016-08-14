@@ -7,7 +7,7 @@
 *.DS_Store
 .*.swp
 *.out
-/server/include/config.php
+/server/config.php
 
 /doc/*
 /.idea/
