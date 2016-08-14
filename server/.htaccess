@@ -3,6 +3,8 @@ Options -Indexes
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    RewriteRule ^$ http://%{HTTP_HOST}/overview [L,R=301]
+
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^api/v1/(.*)$ api/v1/api.php?url=$1 [L]
 

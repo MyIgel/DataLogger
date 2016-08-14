@@ -50,25 +50,37 @@ if (!is_array($config)) {
     die('Not configured');
 }
 
-/** Logginginstanz initialisieren */
-$log = new Logger($config['database'], $config['apiKey']);
+$replace = [];
 
-/** Zeitspanne berechnen, welche angezeigt werden soll */
-if (Request::get('day')) {
-    $from = (int)(time() - (1.01 * 60 * 60 * 24 * Request::get('day'))); // 24 Std.
-} elseif (Request::get('hour')) {
-    $from = (int)(time() - (1.1 * 60 * 60 * Request::get('hour'))); // x Std.
-} elseif (Request::get('time') && Request::get('time') == 'all') {
-    $from = 1;
-} else {
-    $from = (int)(time() - (1.1 * 60 * 60 * 24 * 3)); // 3 Tage
+$success = Request::match('overview', function () use ($config, &$replace) {
+    /** Logginginstanz initialisieren */
+    $log = new Logger($config['database'], $config['apiKey']);
+
+    /** Zeitspanne berechnen, welche angezeigt werden soll */
+    if (Request::get('day')) {
+        $from = (int)(time() - (1.01 * 60 * 60 * 24 * Request::get('day'))); // 24 Std.
+    } elseif (Request::get('hour')) {
+        $from = (int)(time() - (1.1 * 60 * 60 * Request::get('hour'))); // x Std.
+    } elseif (Request::get('time') && Request::get('time') == 'all') {
+        $from = 1;
+    } else {
+        $from = (int)(time() - (1.1 * 60 * 60 * 24 * 3)); // 3 Tage
+    }
+
+    $replace['/*SCRIPT*/'] = Template::render('script', ['/*FROM*/' => $from]);
+
+    $replace['%CONTENT%'] = Template::render('overview', [
+        '%TOTAL%'  => $log->stats('total'),
+        '/*FROM*/' => $from,
+    ]);
+});
+
+if (!$success) {
+    header('HTTP/1.0 404 Not Found');
 }
 
-$script = Template::render('script', ['/*FROM*/' => $from]);
-
-echo Template::render('index', [
-    '%SELF%'     => $_SERVER['PHP_SELF'],
-    '%TOTAL%'    => $log->stats('total'),
-    '/*FROM*/'   => $from,
-    '/*SCRIPT*/' => $script,
-]);
+echo Template::render('index', array_merge([
+    '%STATS%'    => '/overview',
+    '%CONTENT%'  => '404: Site not found',
+    '/*SCRIPT*/' => '',
+], $replace));

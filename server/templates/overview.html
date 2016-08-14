@@ -1,0 +1,40 @@
+<div class="row">
+    <div class="col-lg-8">
+        <h1>Temp
+            <small>@HOME</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="glyphicon glyphicon-home"></i> Stats</a>
+            </li>
+            <li class="active"><i class="glyphicon glyphicon-signal"></i> Data</li>
+        </ol>
+    </div>
+    <div class="col-lg-4">
+        <ul class="list-group">
+            <li class="list-group-item">Gesamt Datensätze: <span class="badge">%TOTAL%</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <h2>Temperatur</h2>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="glyphicon glyphicon-signal"></i>
+                    <button class="btn btn-info pull-right btn-sm"
+                            onclick="updateChart($('#flotTemp'), parseInt('/*FROM*/'))">
+                        <i class="glyphicon glyphicon-refresh"></i>
+                    </button>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="flot-chart">
+                    <div class="flot-chart-content" id="flotTemp"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
