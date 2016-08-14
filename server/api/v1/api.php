@@ -2,7 +2,7 @@
 /**
  * Data Logging API
  *
- * @todo           Header Auth, header err response, requests (GET,POST,DELETE...) ...
+ * @todo           access_token, header err response, requests (GET,POST,DELETE...) ...
  * @package        DataLogger\Core\LoggerBrain
  * @author         Igor Scheller <igor.scheller@igorshp.de>
  * @license        http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
@@ -35,6 +35,8 @@ if (!is_array($config)) {
 $apiKey = '';
 if (Request::post('apikey')) {
     $apiKey = Request::post('apikey');
+} elseif (Request::header('apikey')) {
+    $apiKey = Request::header('apikey');
 } elseif (Request::get('apikey')) {
     $apiKey = Request::get('apikey');
 } else {
@@ -102,19 +104,13 @@ Request::match('show/([a-zA-Z]+)/(.+)', function ($match) {
     $sensor = current($log->getSensor($sensorNo, $type));
 
     if ($sensor) {
-
         if (!empty($from)) {
-
             if (!empty($to)) {
-
                 $data = $log->get($sensor['id'], $from, $to);
             } else {
-
                 $data = $log->get($sensor['id'], $from);
             }
-
         } else {
-
             $data = $log->get($sensor['id']);
         }
     }

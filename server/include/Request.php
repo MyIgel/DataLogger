@@ -70,4 +70,25 @@ class Request
         }
         return $default;
     }
+
+    /**
+     * Header-wert
+     *
+     * Wenn vorhanden wird der HTTP-Header zurückgegeben, sonst der Standartwert
+     *
+     * @param   string $key
+     * @param   mixed  $default = null
+     * @returns mixed
+     */
+    public static function header($key, $default = null)
+    {
+        $key = preg_replace('/([^\w]+)/s', '_', $key);
+        $key = strtoupper($key);
+        $key = 'HTTP_' . $key;
+
+        if (!empty($_SERVER[$key])) {
+            return $_SERVER[$key];
+        }
+        return $default;
+    }
 }
